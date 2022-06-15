@@ -20,9 +20,12 @@
 
     <script type="text/javascript">
         var socket = io('http://localhost:3000');
-
+        // var socket = new WebSocket('ws://localhost:3000', 'a');
         function renderMessage(message) {
-            $('.messages').append('<div class="message"><strong>'+message.author+'</strong>: ' + message.message + '</div>')
+            if(message.author && message.message) {
+                $('.messages').append('<div class="message"><strong>'+message.author+'</strong>: ' + message.message + '</div>')
+            }
+            
         }
 
         socket.on('previousMessage', function(message) {
@@ -41,7 +44,7 @@
             var author = $('input[name=username').val();
             var message = $('input[name=message]').val();
 
-            if(author.lenght && message.lenght) {
+            if(author && message) {
                 var messageObject = {
                     author: author,
                     message: message,

@@ -4,13 +4,18 @@
   "description": "Webchat utilizando socketIo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
   },
   "author": "Mateus Aristides",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "socket.io": "^4.5.1"
+    "socket.io": "^4.5.1",
+    "ws": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }
