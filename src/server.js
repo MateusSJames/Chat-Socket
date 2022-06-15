@@ -1,11 +1,13 @@
 const websocket = require('ws');
 const express = require('express');
 const path = require('path');
+const body = require('body-parser');
 
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
+app.use(body.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'public'));
 app.engine('html', require('ejs').renderFile);
@@ -18,23 +20,17 @@ app.use('/', (req, res) => {
 let messages = [];
 
 io.on('connection', socket => {
-    console.log(`Socket conectado: ${socket.id}`);
-
     socket.emit('previousMessages', messages);
-
     socket.on('sendMessage', data => {
-        messages.push(data);
-        socket.broadcast.emit('receivedMessage', data);
+        if(data.message == 'fechar' || data.message == 'Fechar') {
+            socket.disconnect();
+        }else {
+            messages.push(data);
+            socket.broadcast.emit('receivedMessage', data);
+        }
     });
-
-    // socket.emit('previousMessages', messages);
-
-    // socket.on('sendMessage', data => {
-    //     // messages.push(data);
-    //     // socket.broadcast.emit('receivedMessage', data);
-    // });
 });
 
 server.listen(3000, () => {
     console.log('Server started!!');
-});
+}); 

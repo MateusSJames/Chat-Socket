@@ -20,9 +20,17 @@
 
     <script type="text/javascript">
         var socket = io('http://localhost:3000');
-        // var socket = new WebSocket('ws://localhost:3000', 'a');
         function renderMessage(message) {
-            if(message.author && message.message) {
+
+            if(message.message == '12345' || message == 'Node' || message == 'Socket') {
+                $('.messages').append('<div class="message"><strong>'+message.author+'</strong>: Essa mensagem nao sera enviada')
+            }
+
+            else if(message.message == '' || message.author == '') {
+                $('.messages').append('<div class="message"><strong>'+message.author+'</strong>: Essa mensagem nao sera enviada')
+            }
+
+            else if(message.author && message.message) {
                 $('.messages').append('<div class="message"><strong>'+message.author+'</strong>: ' + message.message + '</div>')
             }
             
@@ -44,16 +52,57 @@
             var author = $('input[name=username').val();
             var message = $('input[name=message]').val();
 
-            if(author && message) {
+            if(message != '12345' && message != 'Node' && message != 'Socket') {
+                if(message == 'fechar' || message == 'Fechar') {
                 var messageObject = {
                     author: author,
-                    message: message,
+                    message: 'Chat Finalizado',
                     status: 200,
-                    operation: 'SendMessage'
+                    operation: 'Close'
                 };
                 renderMessage(messageObject);
                 socket.emit('sendMessage', messageObject);
             }
+
+                else if(message == 'iniciar' || message == 'Iniciar') {
+                    var messageObject = {
+                        author: author,
+                        message: 'Chat Iniciado',
+                        status: 200,
+                        operation: 'Init'
+                    };
+                    renderMessage(messageObject);
+                    socket.emit('sendMessage', messageObject);
+                }
+
+                else{
+                    var messageObject = {
+                        author: author,
+                        message: message,
+                        status: 200,
+                        operation: 'SendMessage'
+                    };
+                    renderMessage(messageObject);
+                    socket.emit('sendMessage', messageObject);
+                }
+            } else if(typeof message === 'undefined' || typeof author === 'undefind') {
+                var messageObject = {
+                    author: author,
+                    message: 'Usuario ou mensagem não informados',
+                    status: 400,
+                    operation: 'NotSend'
+                };
+                renderMessage(messageObject)
+            } else {
+                var messageObject = {
+                    author: author,
+                    message: 'Essa mensagem nao sera enviada',
+                    status: 400,
+                    operation: 'NotSend'
+                };
+                renderMessage(messageObject)
+            }
+            
         });
     </script>
 </body>
